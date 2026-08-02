@@ -567,7 +567,13 @@ function WaitlistForm() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!name.trim() || !email.trim()) return;
+    const normalizedName = name.trim();
+    const normalizedEmail = email.trim();
+    if (!normalizedName || !normalizedEmail) {
+      setStatus("error");
+      setMessage("Please provide your name and a valid email address.");
+      return;
+    }
     setStatus("sending");
     try {
       // Attribution: read UTM params from this page's query string and the
@@ -575,8 +581,8 @@ function WaitlistForm() {
       const params = new URLSearchParams(window.location.search);
       const result = await submitWaitlist({
         data: {
-          name: name.trim(),
-          email: email.trim(),
+          name: normalizedName,
+          email: normalizedEmail,
           source: params.get("utm_source") ?? "",
           medium: params.get("utm_medium") ?? "",
           campaign: params.get("utm_campaign") ?? "",
